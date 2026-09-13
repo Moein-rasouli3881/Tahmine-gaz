@@ -79,6 +79,10 @@ h2{
   color:#d4af37;
 }
 
+h3{
+  color:#d4af37;
+}
+
 .dashboard-title{
   margin-bottom:20px;
 }
@@ -99,7 +103,6 @@ h2{
 
 .card h3{
   margin-top:0;
-  color:#d4af37;
 }
 
 .amount{
@@ -107,7 +110,9 @@ h2{
   font-weight:bold;
 }
 
-input,select,textarea{
+input,
+select,
+textarea{
   width:100%;
   padding:13px;
   margin:7px 0;
@@ -139,8 +144,80 @@ textarea{
   opacity:.9;
 }
 
+.secondary-btn{
+  background:#242424;
+  color:#d4af37;
+  border:1px solid #66531b;
+  border-radius:9px;
+  padding:10px 14px;
+  cursor:pointer;
+  margin-top:8px;
+}
+
 .form-card{
-  max-width:600px;
+  max-width:700px;
+}
+
+.product-row{
+  display:grid;
+  grid-template-columns:2fr 1fr 1.3fr auto;
+  gap:7px;
+  align-items:center;
+  margin-bottom:7px;
+}
+
+.product-row button{
+  height:46px;
+  background:#441515;
+  color:#fff;
+  border:1px solid #773333;
+  border-radius:9px;
+  cursor:pointer;
+}
+
+.total-box{
+  margin-top:12px;
+  padding:14px;
+  border:1px solid #66531b;
+  border-radius:10px;
+  background:#121212;
+  font-size:18px;
+  color:#d4af37;
+  font-weight:bold;
+}
+
+.records{
+  margin-top:18px;
+  display:grid;
+  gap:10px;
+}
+
+.record{
+  padding:14px;
+  border:1px solid #333;
+  border-radius:10px;
+  background:#111;
+  overflow:hidden;
+}
+
+.record strong{
+  color:#d4af37;
+}
+
+.record button{
+  float:left;
+  background:#441515;
+  color:#fff;
+  border:1px solid #773333;
+  border-radius:7px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+
+.small{
+  color:#aaa;
+  font-size:12px;
+  margin-top:5px;
 }
 
 footer{
@@ -176,6 +253,18 @@ footer{
     font-size:17px;
   }
 
+  .product-row{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .product-row input:first-child{
+    grid-column:1/-1;
+  }
+
+  .product-row button{
+    grid-column:1/-1;
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -188,239 +277,351 @@ footer{
 </header>
 
 <nav>
-<button onclick="showPage('dashboard')">🏠 داشبورد</button>
-<button onclick="showPage('sales')">🧾 فروش</button>
-<button onclick="showPage('people')">👥 اشخاص</button>
-<button onclick="showPage('expenses')">💰 هزینه‌ها</button>
-<button onclick="showPage('payments')">💳 دریافت و پرداخت</button>
-<button onclick="showPage('workers')">👷 کارگرها</button>
-<button onclick="showPage('inventory')">📦 انبار</button>
-<button onclick="showPage('checks')">📄 چک‌ها</button>
+  <button onclick="showPage('dashboard')">🏠 داشبورد</button>
+  <button onclick="showPage('sales')">🧾 فروش</button>
+  <button onclick="showPage('people')">👥 اشخاص</button>
+  <button onclick="showPage('expenses')">💰 هزینه‌ها</button>
+  <button onclick="showPage('payments')">💳 دریافت و پرداخت</button>
+  <button onclick="showPage('workers')">👷 کارگرها</button>
+  <button onclick="showPage('inventory')">📦 انبار</button>
+  <button onclick="showPage('checks')">📄 چک‌ها</button>
 </nav>
 
 <main>
 
+<!-- داشبورد -->
 <section id="dashboard" class="page active">
 
-<div class="dashboard-title">
-<h2>داشبورد مدیریت</h2>
-<p>خلاصه وضعیت کسب‌وکار گز تهمینه</p>
-</div>
+  <div class="dashboard-title">
+    <h2>داشبورد مدیریت</h2>
+    <p>خلاصه وضعیت کسب‌وکار گز تهمینه</p>
+  </div>
 
-<div class="cards">
+  <div class="cards">
 
-<div class="card">
-<h3>💰 فروش امروز</h3>
-<div class="amount">۰ تومان</div>
-</div>
+    <div class="card">
+      <h3>💰 فروش امروز</h3>
+      <div id="todaySales" class="amount">۰ تومان</div>
+    </div>
 
-<div class="card">
-<h3>📈 فروش ماه</h3>
-<div class="amount">۰ تومان</div>
-</div>
+    <div class="card">
+      <h3>📈 فروش ماه</h3>
+      <div id="monthSales" class="amount">۰ تومان</div>
+    </div>
 
-<div class="card">
-<h3>👥 طلب مشتری‌ها</h3>
-<div class="amount">۰ تومان</div>
-</div>
+    <div class="card">
+      <h3>👥 طلب مشتری‌ها</h3>
+      <div id="debts" class="amount">۰ تومان</div>
+    </div>
 
-<div class="card">
-<h3>💸 هزینه‌ها</h3>
-<div class="amount">۰ تومان</div>
-</div>
+    <div class="card">
+      <h3>💸 هزینه‌ها</h3>
+      <div id="expensesTotal" class="amount">۰ تومان</div>
+    </div>
 
-<div class="card">
-<h3>📄 چک‌ها</h3>
-<div class="amount">۰ مورد</div>
-</div>
+    <div class="card">
+      <h3>📄 چک‌ها</h3>
+      <div id="checksCount" class="amount">۰ مورد</div>
+    </div>
 
-<div class="card">
-<h3>📦 موجودی انبار</h3>
-<div class="amount">۰ کالا</div>
-</div>
+    <div class="card">
+      <h3>📦 موجودی انبار</h3>
+      <div id="inventoryCount" class="amount">۰ کالا</div>
+    </div>
 
-</div>
+  </div>
 
 </section>
 
 
+<!-- فروش -->
 <section id="sales" class="page">
 
-<h2>🧾 ثبت فروش</h2>
+  <h2>🧾 ثبت فروش</h2>
 
-<div class="card form-card">
+  <div class="card form-card">
 
-<input placeholder="نام مشتری">
+    <input id="saleCustomer" placeholder="نام مشتری">
 
-<input placeholder="نام محصول">
+    <h3>اقلام فروش</h3>
 
-<input type="number" placeholder="تعداد">
+    <div id="productRows"></div>
 
-<input type="number" placeholder="مبلغ کل">
+    <button
+      type="button"
+      class="secondary-btn"
+      onclick="addProductRow()">
+      ➕ افزودن محصول
+    </button>
 
-<select>
-<option>نقدی</option>
-<option>کارت به کارت</option>
-<option>چکی</option>
-<option>نسیه</option>
-</select>
+    <div class="total-box">
+      مبلغ کل فروش:
+      <span id="saleTotal">۰</span>
+      تومان
+    </div>
 
-<button class="gold-btn">ثبت فروش</button>
+    <select id="salePayment">
+      <option>نقدی</option>
+      <option>کارت به کارت</option>
+      <option>چکی</option>
+      <option>نسیه</option>
+    </select>
 
-</div>
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="saveSale()">
+      ثبت فروش
+    </button>
+
+    <div id="salesList" class="records"></div>
+
+  </div>
 
 </section>
 
 
+<!-- اشخاص -->
 <section id="people" class="page">
 
-<h2>👥 حساب اشخاص</h2>
+  <h2>👥 حساب اشخاص</h2>
 
-<div class="card form-card">
+  <div class="card form-card">
 
-<input placeholder="نام شخص">
+    <input
+      id="personName"
+      placeholder="نام شخص">
 
-<select>
-<option>مشتری</option>
-<option>فروشنده</option>
-<option>کارگر</option>
-<option>سایر</option>
-</select>
+    <select id="personType">
+      <option>مشتری</option>
+      <option>فروشنده</option>
+      <option>کارگر</option>
+      <option>سایر</option>
+    </select>
 
-<input placeholder="شماره تماس">
+    <input
+      id="personPhone"
+      placeholder="شماره تماس">
 
-<input type="number" placeholder="مانده حساب">
+    <input
+      id="personBalance"
+      type="number"
+      placeholder="مانده حساب">
 
-<button class="gold-btn">ثبت شخص</button>
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="savePerson()">
+      ثبت شخص
+    </button>
 
-</div>
+    <div id="peopleList" class="records"></div>
+
+  </div>
 
 </section>
 
 
+<!-- هزینه -->
 <section id="expenses" class="page">
 
-<h2>💰 ثبت هزینه</h2>
+  <h2>💰 ثبت هزینه</h2>
 
-<div class="card form-card">
+  <div class="card form-card">
 
-<input type="number" placeholder="مبلغ هزینه">
+    <input
+      id="expenseAmount"
+      type="number"
+      placeholder="مبلغ هزینه">
 
-<input placeholder="بابت هزینه">
+    <input
+      id="expenseTitle"
+      placeholder="بابت هزینه">
 
-<textarea placeholder="توضیحات هزینه"></textarea>
+    <textarea
+      id="expenseNote"
+      placeholder="توضیحات هزینه"></textarea>
 
-<button class="gold-btn">ثبت هزینه</button>
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="saveExpense()">
+      ثبت هزینه
+    </button>
 
-</div>
+    <div id="expensesList" class="records"></div>
+
+  </div>
 
 </section>
 
 
+<!-- دریافت و پرداخت -->
 <section id="payments" class="page">
 
-<h2>💳 دریافت و پرداخت</h2>
+  <h2>💳 دریافت و پرداخت</h2>
 
-<div class="card form-card">
+  <div class="card form-card">
 
-<select>
-<option>دریافت</option>
-<option>پرداخت</option>
-</select>
+    <select id="paymentType">
+      <option>دریافت</option>
+      <option>پرداخت</option>
+    </select>
 
-<input placeholder="نام شخص">
+    <input
+      id="paymentPerson"
+      placeholder="نام شخص">
 
-<input type="number" placeholder="مبلغ">
+    <input
+      id="paymentAmount"
+      type="number"
+      placeholder="مبلغ">
 
-<select>
-<option>نقدی</option>
-<option>کارت به کارت</option>
-<option>چک</option>
-</select>
+    <select id="paymentMethod">
+      <option>نقدی</option>
+      <option>کارت به کارت</option>
+      <option>چک</option>
+    </select>
 
-<input placeholder="شماره کارت">
+    <input
+      id="paymentCard"
+      placeholder="شماره کارت">
 
-<input placeholder="نام صاحب کارت">
+    <input
+      id="paymentCardOwner"
+      placeholder="نام صاحب کارت">
 
-<input placeholder="بابت چه چیزی">
+    <input
+      id="paymentTitle"
+      placeholder="بابت چه چیزی">
 
-<button class="gold-btn">ثبت تراکنش</button>
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="savePayment()">
+      ثبت تراکنش
+    </button>
 
-</div>
+    <div id="paymentsList" class="records"></div>
+
+  </div>
 
 </section>
 
 
+<!-- کارگر -->
 <section id="workers" class="page">
 
-<h2>👷 مدیریت کارگرها</h2>
+  <h2>👷 مدیریت کارگرها</h2>
 
-<div class="card form-card">
+  <div class="card form-card">
 
-<input placeholder="نام کارگر">
+    <input
+      id="workerName"
+      placeholder="نام کارگر">
 
-<select>
-<option>ماهانه</option>
-<option>روزانه</option>
-<option>ساعتی</option>
-<option>تعدادی</option>
-</select>
+    <select id="workerType">
+      <option>ماهانه</option>
+      <option>روزانه</option>
+      <option>ساعتی</option>
+      <option>تعدادی</option>
+    </select>
 
-<input type="number" placeholder="مبلغ حقوق">
+    <input
+      id="workerSalary"
+      type="number"
+      placeholder="مبلغ حقوق">
 
-<button class="gold-btn">ثبت کارگر</button>
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="saveWorker()">
+      ثبت کارگر
+    </button>
 
-</div>
+    <div id="workersList" class="records"></div>
+
+  </div>
 
 </section>
 
 
+<!-- انبار -->
 <section id="inventory" class="page">
 
-<h2>📦 مدیریت انبار</h2>
+  <h2>📦 مدیریت انبار</h2>
 
-<div class="card form-card">
+  <div class="card form-card">
 
-<input placeholder="نام کالا یا مواد اولیه">
+    <input
+      id="inventoryName"
+      placeholder="نام کالا یا مواد اولیه">
 
-<input type="number" placeholder="موجودی">
+    <input
+      id="inventoryStock"
+      type="number"
+      placeholder="موجودی">
 
-<select>
-<option>کیلوگرم</option>
-<option>عدد</option>
-<option>بسته</option>
-<option>کارتن</option>
-</select>
+    <select id="inventoryUnit">
+      <option>کیلوگرم</option>
+      <option>عدد</option>
+      <option>بسته</option>
+      <option>کارتن</option>
+    </select>
 
-<button class="gold-btn">ثبت کالا</button>
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="saveInventory()">
+      ثبت کالا
+    </button>
 
-</div>
+    <div id="inventoryList" class="records"></div>
+
+  </div>
 
 </section>
 
 
+<!-- چک -->
 <section id="checks" class="page">
 
-<h2>📄 مدیریت چک‌ها</h2>
+  <h2>📄 مدیریت چک‌ها</h2>
 
-<div class="card form-card">
+  <div class="card form-card">
 
-<select>
-<option>چک دریافتی</option>
-<option>چک پرداختی</option>
-</select>
+    <select id="checkType">
+      <option>چک دریافتی</option>
+      <option>چک پرداختی</option>
+    </select>
 
-<input placeholder="نام شخص">
+    <input
+      id="checkPerson"
+      placeholder="نام شخص">
 
-<input placeholder="شماره چک">
+    <input
+      id="checkNumber"
+      placeholder="شماره چک">
 
-<input type="number" placeholder="مبلغ چک">
+    <input
+      id="checkAmount"
+      type="number"
+      placeholder="مبلغ چک">
 
-<input type="date">
+    <input
+      id="checkDate"
+      type="date">
 
-<button class="gold-btn">ثبت چک</button>
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="saveCheck()">
+      ثبت چک
+    </button>
 
-</div>
+    <div id="checksList" class="records"></div>
+
+  </div>
 
 </section>
 
@@ -430,21 +631,1278 @@ footer{
 گز تهمینه © سیستم مدیریت کسب‌وکار
 </footer>
 
+
 <script>
+
+/* =========================
+   ذخیره اطلاعات
+========================= */
+
+const STORAGE_KEY = "tahmineh_data_v2";
+
+let data = {
+  sales: [],
+  people: [],
+  expenses: [],
+  payments: [],
+  workers: [],
+  inventory: [],
+  checks: []
+};
+
+
+/* خواندن اطلاعات قبلی */
+
+try {
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  if(saved){
+
+    const parsed = JSON.parse(saved);
+
+    data = {
+      ...data,
+      ...parsed
+    };
+
+  }
+
+}catch(error){
+
+  console.log("خطا در خواندن اطلاعات:", error);
+
+}
+
+
+/* ذخیره */
+
+function saveData(){
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(data)
+  );
+
+}
+
+
+/* =========================
+   ابزارها
+========================= */
+
+function money(number){
+
+  return Number(number || 0)
+    .toLocaleString("fa-IR");
+
+}
+
+
+function todayKey(date = new Date()){
+
+  return (
+    date.getFullYear()
+    + "-"
+    + String(date.getMonth()+1).padStart(2,"0")
+    + "-"
+    + String(date.getDate()).padStart(2,"0")
+  );
+
+}
+
+
+function monthKey(date = new Date()){
+
+  return (
+    date.getFullYear()
+    + "-"
+    + String(date.getMonth()+1).padStart(2,"0")
+  );
+
+}
+
+
+function nowKey(){
+
+  return todayKey(new Date());
+
+}
+
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+
+}
+
+
+/* =========================
+   صفحات
+========================= */
 
 function showPage(pageId){
 
-document.querySelectorAll('.page').forEach(function(page){
+  document
+    .querySelectorAll(".page")
+    .forEach(function(page){
 
-page.classList.remove('active');
+      page.classList.remove("active");
 
-});
+    });
 
-document.getElementById(pageId).classList.add('active');
+  const page = document.getElementById(pageId);
 
-window.scrollTo(0,0);
+  if(page){
+
+    page.classList.add("active");
+
+  }
+
+  window.scrollTo(0,0);
 
 }
+
+
+/* =========================
+   فروش
+========================= */
+
+function addProductRow(
+  name = "",
+  qty = "",
+  price = ""
+){
+
+  const box =
+    document.getElementById("productRows");
+
+  const row =
+    document.createElement("div");
+
+  row.className = "product-row";
+
+  row.innerHTML = `
+
+    <input
+      class="p-name"
+      placeholder="نام محصول"
+      value="${esc(name)}">
+
+    <input
+      class="p-qty"
+      type="number"
+      min="1"
+      placeholder="تعداد"
+      value="${qty}"
+      oninput="calcSaleTotal()">
+
+    <input
+      class="p-price"
+      type="number"
+      min="0"
+      placeholder="مبلغ واحد"
+      value="${price}"
+      oninput="calcSaleTotal()">
+
+    <button
+      type="button"
+      onclick="
+        this.parentElement.remove();
+        calcSaleTotal();
+      ">
+      حذف
+    </button>
+
+  `;
+
+  box.appendChild(row);
+
+  calcSaleTotal();
+
+}
+
+
+/* محاسبه مبلغ فروش */
+
+function calcSaleTotal(){
+
+  let total = 0;
+
+  document
+    .querySelectorAll(".product-row")
+    .forEach(function(row){
+
+      const qty =
+        Number(
+          row.querySelector(".p-qty").value
+        ) || 0;
+
+      const price =
+        Number(
+          row.querySelector(".p-price").value
+        ) || 0;
+
+      total += qty * price;
+
+    });
+
+  document.getElementById("saleTotal")
+    .textContent = money(total);
+
+  return total;
+
+}
+
+
+/* ثبت فروش */
+
+function saveSale(){
+
+  const customer =
+    document
+      .getElementById("saleCustomer")
+      .value
+      .trim()
+      || "مشتری متفرقه";
+
+
+  const products = [];
+
+  document
+    .querySelectorAll(".product-row")
+    .forEach(function(row){
+
+      const name =
+        row.querySelector(".p-name")
+          .value
+          .trim();
+
+      const qty =
+        Number(
+          row.querySelector(".p-qty").value
+        ) || 0;
+
+      const unitPrice =
+        Number(
+          row.querySelector(".p-price").value
+        ) || 0;
+
+
+      if(
+        name &&
+        qty > 0
+      ){
+
+        products.push({
+
+          name: name,
+          qty: qty,
+          unitPrice: unitPrice
+
+        });
+
+      }
+
+    });
+
+
+  if(products.length === 0){
+
+    alert("حداقل یک محصول وارد کن.");
+
+    return;
+
+  }
+
+
+  const total =
+    products.reduce(function(sum,product){
+
+      return sum +
+        (
+          product.qty *
+          product.unitPrice
+        );
+
+    },0);
+
+
+  data.sales.unshift({
+
+    id: Date.now(),
+
+    date: nowKey(),
+
+    customer: customer,
+
+    products: products,
+
+    total: total,
+
+    payment:
+      document
+        .getElementById("salePayment")
+        .value
+
+  });
+
+
+  saveData();
+
+  renderAll();
+
+  clearSaleForm();
+
+  alert("فروش با موفقیت ثبت شد.");
+
+}
+
+
+/* پاک کردن فرم فروش */
+
+function clearSaleForm(){
+
+  document.getElementById("saleCustomer")
+    .value = "";
+
+  document.getElementById("salePayment")
+    .value = "نقدی";
+
+  document.getElementById("productRows")
+    .innerHTML = "";
+
+  addProductRow();
+
+}
+
+
+/* =========================
+   اشخاص
+========================= */
+
+function savePerson(){
+
+  const name =
+    document
+      .getElementById("personName")
+      .value
+      .trim();
+
+
+  if(!name){
+
+    alert("نام شخص را وارد کن.");
+
+    return;
+
+  }
+
+
+  data.people.unshift({
+
+    id: Date.now(),
+
+    name: name,
+
+    type:
+      document
+        .getElementById("personType")
+        .value,
+
+    phone:
+      document
+        .getElementById("personPhone")
+        .value
+        .trim(),
+
+    balance:
+      Number(
+        document
+          .getElementById("personBalance")
+          .value
+      ) || 0
+
+  });
+
+
+  saveData();
+
+  renderAll();
+
+
+  document.getElementById("personName")
+    .value = "";
+
+  document.getElementById("personPhone")
+    .value = "";
+
+  document.getElementById("personBalance")
+    .value = "";
+
+
+  alert("شخص ثبت شد.");
+
+}
+
+
+/* =========================
+   هزینه
+========================= */
+
+function saveExpense(){
+
+  const amount =
+    Number(
+      document
+        .getElementById("expenseAmount")
+        .value
+    ) || 0;
+
+
+  const title =
+    document
+      .getElementById("expenseTitle")
+      .value
+      .trim();
+
+
+  if(amount <= 0){
+
+    alert("مبلغ هزینه را وارد کن.");
+
+    return;
+
+  }
+
+
+  data.expenses.unshift({
+
+    id: Date.now(),
+
+    date: nowKey(),
+
+    amount: amount,
+
+    title: title,
+
+    note:
+      document
+        .getElementById("expenseNote")
+        .value
+        .trim()
+
+  });
+
+
+  saveData();
+
+  renderAll();
+
+
+  document.getElementById("expenseAmount")
+    .value = "";
+
+  document.getElementById("expenseTitle")
+    .value = "";
+
+  document.getElementById("expenseNote")
+    .value = "";
+
+
+  alert("هزینه ثبت شد.");
+
+}
+
+
+/* =========================
+   دریافت و پرداخت
+========================= */
+
+function savePayment(){
+
+  const amount =
+    Number(
+      document
+        .getElementById("paymentAmount")
+        .value
+    ) || 0;
+
+
+  if(amount <= 0){
+
+    alert("مبلغ را وارد کن.");
+
+    return;
+
+  }
+
+
+  data.payments.unshift({
+
+    id: Date.now(),
+
+    date: nowKey(),
+
+    type:
+      document
+        .getElementById("paymentType")
+        .value,
+
+    person:
+      document
+        .getElementById("paymentPerson")
+        .value
+        .trim(),
+
+    amount: amount,
+
+    method:
+      document
+        .getElementById("paymentMethod")
+        .value,
+
+    card:
+      document
+        .getElementById("paymentCard")
+        .value
+        .trim(),
+
+    owner:
+      document
+        .getElementById("paymentCardOwner")
+        .value
+        .trim(),
+
+    title:
+      document
+        .getElementById("paymentTitle")
+        .value
+        .trim()
+
+  });
+
+
+  saveData();
+
+  renderAll();
+
+
+  document.getElementById("paymentPerson")
+    .value = "";
+
+  document.getElementById("paymentAmount")
+    .value = "";
+
+  document.getElementById("paymentCard")
+    .value = "";
+
+  document.getElementById("paymentCardOwner")
+    .value = "";
+
+  document.getElementById("paymentTitle")
+    .value = "";
+
+
+  alert("تراکنش ثبت شد.");
+
+}
+
+
+/* =========================
+   کارگر
+========================= */
+
+function saveWorker(){
+
+  const name =
+    document
+      .getElementById("workerName")
+      .value
+      .trim();
+
+
+  const salary =
+    Number(
+      document
+        .getElementById("workerSalary")
+        .value
+    ) || 0;
+
+
+  if(!name){
+
+    alert("نام کارگر را وارد کن.");
+
+    return;
+
+  }
+
+
+  data.workers.unshift({
+
+    id: Date.now(),
+
+    name: name,
+
+    type:
+      document
+        .getElementById("workerType")
+        .value,
+
+    salary: salary
+
+  });
+
+
+  saveData();
+
+  renderAll();
+
+
+  document.getElementById("workerName")
+    .value = "";
+
+  document.getElementById("workerSalary")
+    .value = "";
+
+
+  alert("کارگر ثبت شد.");
+
+}
+
+
+/* =========================
+   انبار
+========================= */
+
+function saveInventory(){
+
+  const name =
+    document
+      .getElementById("inventoryName")
+      .value
+      .trim();
+
+
+  const stock =
+    Number(
+      document
+        .getElementById("inventoryStock")
+        .value
+    ) || 0;
+
+
+  if(!name){
+
+    alert("نام کالا را وارد کن.");
+
+    return;
+
+  }
+
+
+  data.inventory.unshift({
+
+    id: Date.now(),
+
+    name: name,
+
+    stock: stock,
+
+    unit:
+      document
+        .getElementById("inventoryUnit")
+        .value
+
+  });
+
+
+  saveData();
+
+  renderAll();
+
+
+  document.getElementById("inventoryName")
+    .value = "";
+
+  document.getElementById("inventoryStock")
+    .value = "";
+
+
+  alert("کالا ثبت شد.");
+
+}
+
+
+/* =========================
+   چک
+========================= */
+
+function saveCheck(){
+
+  const amount =
+    Number(
+      document
+        .getElementById("checkAmount")
+        .value
+    ) || 0;
+
+
+  if(amount <= 0){
+
+    alert("مبلغ چک را وارد کن.");
+
+    return;
+
+  }
+
+
+  data.checks.unshift({
+
+    id: Date.now(),
+
+    date: nowKey(),
+
+    type:
+      document
+        .getElementById("checkType")
+        .value,
+
+    person:
+      document
+        .getElementById("checkPerson")
+        .value
+        .trim(),
+
+    number:
+      document
+        .getElementById("checkNumber")
+        .value
+        .trim(),
+
+    amount: amount,
+
+    dueDate:
+      document
+        .getElementById("checkDate")
+        .value
+
+  });
+
+
+  saveData();
+
+  renderAll();
+
+
+  document.getElementById("checkPerson")
+    .value = "";
+
+  document.getElementById("checkNumber")
+    .value = "";
+
+  document.getElementById("checkAmount")
+    .value = "";
+
+  document.getElementById("checkDate")
+    .value = "";
+
+
+  alert("چک ثبت شد.");
+
+}
+
+
+/* =========================
+   حذف
+========================= */
+
+function removeRecord(type,id){
+
+  if(!confirm("این مورد حذف شود؟")){
+
+    return;
+
+  }
+
+
+  data[type] =
+    data[type].filter(function(item){
+
+      return item.id !== id;
+
+    });
+
+
+  saveData();
+
+  renderAll();
+
+}
+
+
+/* =========================
+   نمایش لیست‌ها
+========================= */
+
+function renderList(
+  elementId,
+  items,
+  type,
+  htmlFunction
+){
+
+  const element =
+    document.getElementById(elementId);
+
+
+  if(!element){
+
+    return;
+
+  }
+
+
+  if(items.length === 0){
+
+    element.innerHTML =
+      '<div class="small">هنوز موردی ثبت نشده.</div>';
+
+    return;
+
+  }
+
+
+  element.innerHTML =
+    items
+      .map(function(item){
+
+        return `
+
+          <div class="record">
+
+            ${htmlFunction(item)}
+
+            <button
+              type="button"
+              onclick="
+                removeRecord('${type}',${item.id})
+              ">
+              حذف
+            </button>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+/* =========================
+   نمایش همه اطلاعات
+========================= */
+
+function renderAll(){
+
+
+  /* فروش */
+
+  renderList(
+    "salesList",
+    data.sales,
+    "sales",
+
+    function(sale){
+
+      const products =
+        sale.products
+          .map(function(product){
+
+            return (
+              esc(product.name)
+              + " × "
+              + money(product.qty)
+            );
+
+          })
+          .join("، ");
+
+
+      return `
+
+        <strong>
+          ${esc(sale.customer)}
+        </strong>
+
+        — ${money(sale.total)} تومان
+
+        <br>
+
+        <span class="small">
+
+          ${esc(sale.payment)}
+          |
+          ${esc(sale.date)}
+          |
+          ${products}
+
+        </span>
+
+      `;
+
+    }
+
+  );
+
+
+  /* اشخاص */
+
+  renderList(
+    "peopleList",
+    data.people,
+    "people",
+
+    function(person){
+
+      return `
+
+        <strong>
+          ${esc(person.name)}
+        </strong>
+
+        — ${esc(person.type)}
+
+        <br>
+
+        <span class="small">
+
+          ${esc(person.phone)}
+          |
+          مانده:
+          ${money(person.balance)}
+          تومان
+
+        </span>
+
+      `;
+
+    }
+
+  );
+
+
+  /* هزینه‌ها */
+
+  renderList(
+    "expensesList",
+    data.expenses,
+    "expenses",
+
+    function(expense){
+
+      return `
+
+        <strong>
+          ${money(expense.amount)}
+          تومان
+        </strong>
+
+        — ${esc(expense.title)}
+
+        <br>
+
+        <span class="small">
+
+          ${esc(expense.date)}
+
+          ${
+            expense.note
+            ? " | " + esc(expense.note)
+            : ""
+          }
+
+        </span>
+
+      `;
+
+    }
+
+  );
+
+
+  /* پرداخت‌ها */
+
+  renderList(
+    "paymentsList",
+    data.payments,
+    "payments",
+
+    function(payment){
+
+      return `
+
+        <strong>
+          ${esc(payment.type)}
+        </strong>
+
+        —
+        ${money(payment.amount)}
+        تومان
+
+        —
+        ${esc(payment.person || "بدون نام")}
+
+        <br>
+
+        <span class="small">
+
+          ${esc(payment.method)}
+          |
+          ${esc(payment.title || "")}
+
+        </span>
+
+      `;
+
+    }
+
+  );
+
+
+  /* کارگرها */
+
+  renderList(
+    "workersList",
+    data.workers,
+    "workers",
+
+    function(worker){
+
+      return `
+
+        <strong>
+          ${esc(worker.name)}
+        </strong>
+
+        —
+        ${esc(worker.type)}
+
+        —
+        ${money(worker.salary)}
+        تومان
+
+      `;
+
+    }
+
+  );
+
+
+  /* انبار */
+
+  renderList(
+    "inventoryList",
+    data.inventory,
+    "inventory",
+
+    function(item){
+
+      return `
+
+        <strong>
+          ${esc(item.name)}
+        </strong>
+
+        —
+        ${money(item.stock)}
+        ${esc(item.unit)}
+
+      `;
+
+    }
+
+  );
+
+
+  /* چک‌ها */
+
+  renderList(
+    "checksList",
+    data.checks,
+    "checks",
+
+    function(check){
+
+      return `
+
+        <strong>
+          ${esc(check.type)}
+        </strong>
+
+        —
+        ${money(check.amount)}
+        تومان
+
+        —
+        ${esc(check.person || "بدون نام")}
+
+        <br>
+
+        <span class="small">
+
+          شماره:
+          ${esc(check.number)}
+
+          |
+
+          سررسید:
+          ${esc(check.dueDate || "-")}
+
+        </span>
+
+      `;
+
+    }
+
+  );
+
+
+  updateDashboard();
+
+}
+
+
+/* =========================
+   داشبورد
+========================= */
+
+function updateDashboard(){
+
+  const today =
+    nowKey();
+
+  const month =
+    monthKey();
+
+
+  /* فروش امروز */
+
+  const todayTotal =
+    data.sales
+      .filter(function(sale){
+
+        return sale.date === today;
+
+      })
+      .reduce(function(sum,sale){
+
+        return sum +
+          Number(sale.total || 0);
+
+      },0);
+
+
+  /* فروش ماه */
+
+  const monthTotal =
+    data.sales
+      .filter(function(sale){
+
+        return String(sale.date)
+          .startsWith(month);
+
+      })
+      .reduce(function(sum,sale){
+
+        return sum +
+          Number(sale.total || 0);
+
+      },0);
+
+
+  /* طلب نسیه */
+
+  const debts =
+    data.sales
+      .filter(function(sale){
+
+        return sale.payment === "نسیه";
+
+      })
+      .reduce(function(sum,sale){
+
+        return sum +
+          Number(sale.total || 0);
+
+      },0);
+
+
+  /* مجموع هزینه */
+
+  const expenses =
+    data.expenses
+      .reduce(function(sum,expense){
+
+        return sum +
+          Number(expense.amount || 0);
+
+      },0);
+
+
+  document.getElementById("todaySales")
+    .textContent =
+      money(todayTotal) + " تومان";
+
+
+  document.getElementById("monthSales")
+    .textContent =
+      money(monthTotal) + " تومان";
+
+
+  document.getElementById("debts")
+    .textContent =
+      money(debts) + " تومان";
+
+
+  document.getElementById("expensesTotal")
+    .textContent =
+      money(expenses) + " تومان";
+
+
+  document.getElementById("checksCount")
+    .textContent =
+      money(data.checks.length) + " مورد";
+
+
+  document.getElementById("inventoryCount")
+    .textContent =
+      money(data.inventory.length) + " کالا";
+
+}
+
+
+/* =========================
+   شروع برنامه
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    addProductRow();
+
+    renderAll();
+
+  }
+);
 
 </script>
 

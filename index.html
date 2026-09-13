@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>گز تهمینه | مدیریت و حسابداری</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #080808;
+      color: white;
+    }
+
+    header {
+      background: #111;
+      border-bottom: 2px solid #d4af37;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #d4af37;
+    }
+
+    header p {
+      color: #bbb;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 15px;
+      background: #111;
+    }
+
+    nav button {
+      background: #1d1d1d;
+      color: #d4af37;
+      border: 1px solid #d4af37;
+      border-radius: 8px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: #151515;
+      border: 1px solid #5c4b18;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card h3 {
+      color: #d4af37;
+      margin-top: 0;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0;
+      background: #111;
+      color: white;
+      border: 1px solid #66551c;
+      border-radius: 7px;
+    }
+
+    .gold-btn {
+      background: #d4af37;
+      color: black;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 7px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      background: #111;
+    }
+
+    th {
+      color: #d4af37;
+    }
+
+    td, th {
+      padding: 12px;
+      border-bottom: 1px solid #333;
+      text-align: right;
+    }
+
+    @media(max-width:600px) {
+      main { padding: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>گز تهمینه</h1>
+  <p>سیستم مدیریت و حسابداری کسب‌وکار</p>
+</header>
+
+<nav>
+  <button onclick="showPage('dashboard')">داشبورد</button>
+  <button onclick="showPage('invoices')">فاکتورها</button>
+  <button onclick="showPage('people')">حساب اشخاص</button>
+  <button onclick="showPage('workers')">حقوق کارگرها</button>
+  <button onclick="showPage('inventory')">انبار</button>
+  <button onclick="showPage('checks')">چک‌ها</button>
+  <button onclick="showPage('expenses')">هزینه‌ها</button>
+  <button onclick="showPage('payments')">دریافت و پرداخت</button>
+</nav>
+
+<main>
+
+<section id="dashboard" class="page active">
+  <h2>داشبورد</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>فروش</h3>
+      <strong>۰ تومان</strong>
+    </div>
+
+    <div class="card">
+      <h3>طلب مشتری‌ها</h3>
+      <strong>۰ تومان</strong>
+    </div>
+
+    <div class="card">
+      <h3>چک‌ها</h3>
+      <strong>۰ مورد</strong>
+    </div>
+
+    <div class="card">
+      <h3>هزینه‌ها</h3>
+      <strong>۰ تومان</strong>
+    </div>
+  </div>
+</section>
+
+<section id="invoices" class="page">
+  <h2>فاکتورها</h2>
+  <div class="card">
+    <input placeholder="نام مشتری">
+    <input placeholder="نام محصول">
+    <input type="number" placeholder="مبلغ">
+    <button class="gold-btn">ثبت فاکتور</button>
+  </div>
+</section>
+
+<section id="people" class="page">
+  <h2>حساب اشخاص</h2>
+  <div class="card">
+    <input placeholder="نام شخص">
+    <select>
+      <option>مشتری</option>
+      <option>فروشنده</option>
+      <option>کارگر</option>
+    </select>
+    <input type="number" placeholder="مانده حساب">
+    <button class="gold-btn">ثبت شخص</button>
+  </div>
+</section>
+
+<section id="workers" class="page">
+  <h2>حقوق کارگرها</h2>
+  <div class="card">
+    <input placeholder="نام کارگر">
+    <select>
+      <option>ماهانه</option>
+      <option>روزانه</option>
+      <option>ساعتی</option>
+      <option>تعدادی</option>
+    </select>
+    <input type="number" placeholder="مبلغ حقوق">
+    <button class="gold-btn">ثبت</button>
+  </div>
+</section>
+
+<section id="inventory" class="page">
+  <h2>انبار</h2>
+  <div class="card">
+    <input placeholder="نام کالا یا ماده اولیه - مثلاً شکر">
+    <input type="number" placeholder="موجودی">
+    <button class="gold-btn">ثبت موجودی</button>
+  </div>
+</section>
+
+<section id="checks" class="page">
+  <h2>چک‌ها</h2>
+  <div class="card">
+    <select>
+      <option>چک دریافتی</option>
+      <option>چک پرداختی</option>
+    </select>
+    <input placeholder="نام شخص">
+    <input placeholder="شماره چک">
+    <input type="number" placeholder="مبلغ">
+    <button class="gold-btn">ثبت چک</button>
+  </div>
+</section>
+
+<section id="expenses" class="page">
+  <h2>هزینه‌ها</h2>
+
+  <div class="card">
+    <input type="number" placeholder="مبلغ هزینه">
+
+    <input placeholder="بابت هزینه - مثلاً قبض آب">
+
+    <textarea placeholder="توضیحات - مثلاً خرید چسب، منگنه، کرایه حمل بار، تعمیرات و..."></textarea>
+
+    <button class="gold-btn">ثبت هزینه</button>
+  </div>
+
+  <p>
+    تمام هزینه‌ها با مبلغ، بابت هزینه و توضیحات ثبت می‌شوند.
+  </p>
+</section>
+
+<section id="payments" class="page">
+  <h2>دریافت و پرداخت</h2>
+
+  <div class="card">
+    <select>
+      <option>دریافت</option>
+      <option>پرداخت</option>
+    </select>
+
+    <input placeholder="نام شخص">
+
+    <input type="number" placeholder="مبلغ">
+
+    <select>
+      <option>نقدی</option>
+      <option>کارت به کارت</option>
+      <option>چک</option>
+    </select>
+
+    <input placeholder="شماره کارت">
+
+    <input placeholder="نام صاحب کارت">
+
+    <input placeholder="بابت چه چیزی">
+
+    <button class="gold-btn">ثبت تراکنش</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(function(page) {
+    page.classList.remove('active');
+  });
+
+  document.getElementById(pageId).classList.add('active');
+}
+</script>
+
+</body>
+</html>

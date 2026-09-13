@@ -1,296 +1,451 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>گز تهمینه | مدیریت و حسابداری</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Tahoma, Arial, sans-serif;
-    }
+<title>گز تهمینه | مدیریت کسب‌وکار</title>
 
-    body {
-      margin: 0;
-      background: #080808;
-      color: white;
-    }
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Tahoma,Arial,sans-serif;
+}
 
-    header {
-      background: #111;
-      border-bottom: 2px solid #d4af37;
-      padding: 20px;
-      text-align: center;
-    }
+body{
+  margin:0;
+  background:#090909;
+  color:#fff;
+}
 
-    header h1 {
-      margin: 0;
-      color: #d4af37;
-    }
+header{
+  background:linear-gradient(135deg,#111,#1b1608);
+  padding:25px 15px;
+  border-bottom:2px solid #d4af37;
+  text-align:center;
+}
 
-    header p {
-      color: #bbb;
-    }
+.logo{
+  font-size:30px;
+  font-weight:bold;
+  color:#d4af37;
+  margin-bottom:8px;
+}
 
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      padding: 15px;
-      background: #111;
-    }
+.subtitle{
+  color:#aaa;
+  font-size:14px;
+}
 
-    nav button {
-      background: #1d1d1d;
-      color: #d4af37;
-      border: 1px solid #d4af37;
-      border-radius: 8px;
-      padding: 10px 15px;
-      cursor: pointer;
-    }
+nav{
+  background:#111;
+  padding:12px;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  border-bottom:1px solid #333;
+}
 
-    main {
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
+nav button{
+  white-space:nowrap;
+  background:#191919;
+  color:#d4af37;
+  border:1px solid #66531b;
+  border-radius:10px;
+  padding:10px 14px;
+  cursor:pointer;
+}
 
-    .page {
-      display: none;
-    }
+nav button:hover{
+  background:#d4af37;
+  color:#111;
+}
 
-    .page.active {
-      display: block;
-    }
+main{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-    }
+.page{
+  display:none;
+}
 
-    .card {
-      background: #151515;
-      border: 1px solid #5c4b18;
-      border-radius: 12px;
-      padding: 20px;
-    }
+.page.active{
+  display:block;
+}
 
-    .card h3 {
-      color: #d4af37;
-      margin-top: 0;
-    }
+h2{
+  color:#d4af37;
+}
 
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 7px 0;
-      background: #111;
-      color: white;
-      border: 1px solid #66551c;
-      border-radius: 7px;
-    }
+.dashboard-title{
+  margin-bottom:20px;
+}
 
-    .gold-btn {
-      background: #d4af37;
-      color: black;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 7px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
 
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-      background: #111;
-    }
+.card{
+  background:linear-gradient(145deg,#161616,#0e0e0e);
+  border:1px solid #51421a;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.3);
+}
 
-    th {
-      color: #d4af37;
-    }
+.card h3{
+  margin-top:0;
+  color:#d4af37;
+}
 
-    td, th {
-      padding: 12px;
-      border-bottom: 1px solid #333;
-      text-align: right;
-    }
+.amount{
+  font-size:22px;
+  font-weight:bold;
+}
 
-    @media(max-width:600px) {
-      main { padding: 12px; }
-    }
-  </style>
+input,select,textarea{
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  border-radius:9px;
+  border:1px solid #55461b;
+  background:#101010;
+  color:white;
+  font-size:15px;
+}
+
+textarea{
+  min-height:90px;
+}
+
+.gold-btn{
+  width:100%;
+  background:#d4af37;
+  color:#111;
+  border:none;
+  border-radius:9px;
+  padding:14px;
+  font-size:16px;
+  font-weight:bold;
+  margin-top:8px;
+  cursor:pointer;
+}
+
+.gold-btn:hover{
+  opacity:.9;
+}
+
+.form-card{
+  max-width:600px;
+}
+
+footer{
+  text-align:center;
+  color:#777;
+  padding:25px;
+  font-size:12px;
+}
+
+@media(max-width:600px){
+
+  header{
+    padding:20px 10px;
+  }
+
+  .logo{
+    font-size:25px;
+  }
+
+  main{
+    padding:15px;
+  }
+
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  .amount{
+    font-size:17px;
+  }
+
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>گز تهمینه</h1>
-  <p>سیستم مدیریت و حسابداری کسب‌وکار</p>
+  <div class="logo">گز تهمینه</div>
+  <div class="subtitle">سیستم مدیریت و حسابداری کسب‌وکار</div>
 </header>
 
 <nav>
-  <button onclick="showPage('dashboard')">داشبورد</button>
-  <button onclick="showPage('invoices')">فاکتورها</button>
-  <button onclick="showPage('people')">حساب اشخاص</button>
-  <button onclick="showPage('workers')">حقوق کارگرها</button>
-  <button onclick="showPage('inventory')">انبار</button>
-  <button onclick="showPage('checks')">چک‌ها</button>
-  <button onclick="showPage('expenses')">هزینه‌ها</button>
-  <button onclick="showPage('payments')">دریافت و پرداخت</button>
+<button onclick="showPage('dashboard')">🏠 داشبورد</button>
+<button onclick="showPage('sales')">🧾 فروش</button>
+<button onclick="showPage('people')">👥 اشخاص</button>
+<button onclick="showPage('expenses')">💰 هزینه‌ها</button>
+<button onclick="showPage('payments')">💳 دریافت و پرداخت</button>
+<button onclick="showPage('workers')">👷 کارگرها</button>
+<button onclick="showPage('inventory')">📦 انبار</button>
+<button onclick="showPage('checks')">📄 چک‌ها</button>
 </nav>
 
 <main>
 
 <section id="dashboard" class="page active">
-  <h2>داشبورد</h2>
 
-  <div class="cards">
-    <div class="card">
-      <h3>فروش</h3>
-      <strong>۰ تومان</strong>
-    </div>
+<div class="dashboard-title">
+<h2>داشبورد مدیریت</h2>
+<p>خلاصه وضعیت کسب‌وکار گز تهمینه</p>
+</div>
 
-    <div class="card">
-      <h3>طلب مشتری‌ها</h3>
-      <strong>۰ تومان</strong>
-    </div>
+<div class="cards">
 
-    <div class="card">
-      <h3>چک‌ها</h3>
-      <strong>۰ مورد</strong>
-    </div>
+<div class="card">
+<h3>💰 فروش امروز</h3>
+<div class="amount">۰ تومان</div>
+</div>
 
-    <div class="card">
-      <h3>هزینه‌ها</h3>
-      <strong>۰ تومان</strong>
-    </div>
-  </div>
+<div class="card">
+<h3>📈 فروش ماه</h3>
+<div class="amount">۰ تومان</div>
+</div>
+
+<div class="card">
+<h3>👥 طلب مشتری‌ها</h3>
+<div class="amount">۰ تومان</div>
+</div>
+
+<div class="card">
+<h3>💸 هزینه‌ها</h3>
+<div class="amount">۰ تومان</div>
+</div>
+
+<div class="card">
+<h3>📄 چک‌ها</h3>
+<div class="amount">۰ مورد</div>
+</div>
+
+<div class="card">
+<h3>📦 موجودی انبار</h3>
+<div class="amount">۰ کالا</div>
+</div>
+
+</div>
+
 </section>
 
-<section id="invoices" class="page">
-  <h2>فاکتورها</h2>
-  <div class="card">
-    <input placeholder="نام مشتری">
-    <input placeholder="نام محصول">
-    <input type="number" placeholder="مبلغ">
-    <button class="gold-btn">ثبت فاکتور</button>
-  </div>
+
+<section id="sales" class="page">
+
+<h2>🧾 ثبت فروش</h2>
+
+<div class="card form-card">
+
+<input placeholder="نام مشتری">
+
+<input placeholder="نام محصول">
+
+<input type="number" placeholder="تعداد">
+
+<input type="number" placeholder="مبلغ کل">
+
+<select>
+<option>نقدی</option>
+<option>کارت به کارت</option>
+<option>چکی</option>
+<option>نسیه</option>
+</select>
+
+<button class="gold-btn">ثبت فروش</button>
+
+</div>
+
 </section>
+
 
 <section id="people" class="page">
-  <h2>حساب اشخاص</h2>
-  <div class="card">
-    <input placeholder="نام شخص">
-    <select>
-      <option>مشتری</option>
-      <option>فروشنده</option>
-      <option>کارگر</option>
-    </select>
-    <input type="number" placeholder="مانده حساب">
-    <button class="gold-btn">ثبت شخص</button>
-  </div>
+
+<h2>👥 حساب اشخاص</h2>
+
+<div class="card form-card">
+
+<input placeholder="نام شخص">
+
+<select>
+<option>مشتری</option>
+<option>فروشنده</option>
+<option>کارگر</option>
+<option>سایر</option>
+</select>
+
+<input placeholder="شماره تماس">
+
+<input type="number" placeholder="مانده حساب">
+
+<button class="gold-btn">ثبت شخص</button>
+
+</div>
+
 </section>
 
-<section id="workers" class="page">
-  <h2>حقوق کارگرها</h2>
-  <div class="card">
-    <input placeholder="نام کارگر">
-    <select>
-      <option>ماهانه</option>
-      <option>روزانه</option>
-      <option>ساعتی</option>
-      <option>تعدادی</option>
-    </select>
-    <input type="number" placeholder="مبلغ حقوق">
-    <button class="gold-btn">ثبت</button>
-  </div>
-</section>
-
-<section id="inventory" class="page">
-  <h2>انبار</h2>
-  <div class="card">
-    <input placeholder="نام کالا یا ماده اولیه - مثلاً شکر">
-    <input type="number" placeholder="موجودی">
-    <button class="gold-btn">ثبت موجودی</button>
-  </div>
-</section>
-
-<section id="checks" class="page">
-  <h2>چک‌ها</h2>
-  <div class="card">
-    <select>
-      <option>چک دریافتی</option>
-      <option>چک پرداختی</option>
-    </select>
-    <input placeholder="نام شخص">
-    <input placeholder="شماره چک">
-    <input type="number" placeholder="مبلغ">
-    <button class="gold-btn">ثبت چک</button>
-  </div>
-</section>
 
 <section id="expenses" class="page">
-  <h2>هزینه‌ها</h2>
 
-  <div class="card">
-    <input type="number" placeholder="مبلغ هزینه">
+<h2>💰 ثبت هزینه</h2>
 
-    <input placeholder="بابت هزینه - مثلاً قبض آب">
+<div class="card form-card">
 
-    <textarea placeholder="توضیحات - مثلاً خرید چسب، منگنه، کرایه حمل بار، تعمیرات و..."></textarea>
+<input type="number" placeholder="مبلغ هزینه">
 
-    <button class="gold-btn">ثبت هزینه</button>
-  </div>
+<input placeholder="بابت هزینه">
 
-  <p>
-    تمام هزینه‌ها با مبلغ، بابت هزینه و توضیحات ثبت می‌شوند.
-  </p>
+<textarea placeholder="توضیحات هزینه"></textarea>
+
+<button class="gold-btn">ثبت هزینه</button>
+
+</div>
+
 </section>
 
+
 <section id="payments" class="page">
-  <h2>دریافت و پرداخت</h2>
 
-  <div class="card">
-    <select>
-      <option>دریافت</option>
-      <option>پرداخت</option>
-    </select>
+<h2>💳 دریافت و پرداخت</h2>
 
-    <input placeholder="نام شخص">
+<div class="card form-card">
 
-    <input type="number" placeholder="مبلغ">
+<select>
+<option>دریافت</option>
+<option>پرداخت</option>
+</select>
 
-    <select>
-      <option>نقدی</option>
-      <option>کارت به کارت</option>
-      <option>چک</option>
-    </select>
+<input placeholder="نام شخص">
 
-    <input placeholder="شماره کارت">
+<input type="number" placeholder="مبلغ">
 
-    <input placeholder="نام صاحب کارت">
+<select>
+<option>نقدی</option>
+<option>کارت به کارت</option>
+<option>چک</option>
+</select>
 
-    <input placeholder="بابت چه چیزی">
+<input placeholder="شماره کارت">
 
-    <button class="gold-btn">ثبت تراکنش</button>
-  </div>
+<input placeholder="نام صاحب کارت">
+
+<input placeholder="بابت چه چیزی">
+
+<button class="gold-btn">ثبت تراکنش</button>
+
+</div>
+
+</section>
+
+
+<section id="workers" class="page">
+
+<h2>👷 مدیریت کارگرها</h2>
+
+<div class="card form-card">
+
+<input placeholder="نام کارگر">
+
+<select>
+<option>ماهانه</option>
+<option>روزانه</option>
+<option>ساعتی</option>
+<option>تعدادی</option>
+</select>
+
+<input type="number" placeholder="مبلغ حقوق">
+
+<button class="gold-btn">ثبت کارگر</button>
+
+</div>
+
+</section>
+
+
+<section id="inventory" class="page">
+
+<h2>📦 مدیریت انبار</h2>
+
+<div class="card form-card">
+
+<input placeholder="نام کالا یا مواد اولیه">
+
+<input type="number" placeholder="موجودی">
+
+<select>
+<option>کیلوگرم</option>
+<option>عدد</option>
+<option>بسته</option>
+<option>کارتن</option>
+</select>
+
+<button class="gold-btn">ثبت کالا</button>
+
+</div>
+
+</section>
+
+
+<section id="checks" class="page">
+
+<h2>📄 مدیریت چک‌ها</h2>
+
+<div class="card form-card">
+
+<select>
+<option>چک دریافتی</option>
+<option>چک پرداختی</option>
+</select>
+
+<input placeholder="نام شخص">
+
+<input placeholder="شماره چک">
+
+<input type="number" placeholder="مبلغ چک">
+
+<input type="date">
+
+<button class="gold-btn">ثبت چک</button>
+
+</div>
+
 </section>
 
 </main>
 
-<script>
-function showPage(pageId) {
-  document.querySelectorAll('.page').forEach(function(page) {
-    page.classList.remove('active');
-  });
+<footer>
+گز تهمینه © سیستم مدیریت کسب‌وکار
+</footer>
 
-  document.getElementById(pageId).classList.add('active');
+<script>
+
+function showPage(pageId){
+
+document.querySelectorAll('.page').forEach(function(page){
+
+page.classList.remove('active');
+
+});
+
+document.getElementById(pageId).classList.add('active');
+
+window.scrollTo(0,0);
+
 }
+
 </script>
 
 </body>

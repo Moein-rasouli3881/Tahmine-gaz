@@ -2762,6 +2762,1895 @@ renderAll();
 );
 
 </script>
+<!-- =========================================================
+     افزونه نهایی امکانات گز تهمینه
+     این بخش را بدون حذف کدهای قبلی، قبل از </body> قرار دهید
+========================================================= -->
 
+<style>
+/* ---------- افزونه گز تهمینه ---------- */
+
+.tg-extra-box{
+  background:#111;
+  border:1px solid #d4af37;
+  border-radius:12px;
+  padding:15px;
+  margin-top:15px;
+}
+
+.tg-extra-title{
+  color:#d4af37;
+  font-weight:bold;
+  margin-bottom:12px;
+  font-size:17px;
+}
+
+.tg-extra-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:10px;
+}
+
+.tg-extra-grid input,
+.tg-extra-grid select{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #444;
+  background:#181818;
+  color:#fff;
+}
+
+.tg-print-btn{
+  background:#d4af37 !important;
+  color:#111 !important;
+  border:none !important;
+  padding:8px 12px !important;
+  border-radius:7px !important;
+  cursor:pointer !important;
+  font-weight:bold;
+  margin:4px;
+}
+
+.tg-print-btn.dark{
+  background:#222 !important;
+  color:#d4af37 !important;
+  border:1px solid #d4af37 !important;
+}
+
+.tg-worker-info{
+  margin-top:8px;
+  line-height:1.9;
+}
+
+.tg-positive{
+  color:#4caf50;
+}
+
+.tg-negative{
+  color:#ff7676;
+}
+
+.tg-logo-extra{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-top:5px;
+}
+
+.tg-bridge{
+  width:55px;
+  height:28px;
+}
+
+@media print{
+  body{
+    background:#fff !important;
+    color:#111 !important;
+  }
+}
+</style>
+
+<script>
+(function(){
+
+"use strict";
+
+/* =========================================================
+   ابزارهای عمومی
+========================================================= */
+
+function tgNum(v){
+  return Number(v || 0);
+}
+
+function tgMoney(v){
+  return tgNum(v).toLocaleString("fa-IR");
+}
+
+function tgPad(n){
+  return String(n).padStart(2,"0");
+}
+
+
+/* =========================================================
+   تبدیل میلادی به شمسی
+========================================================= */
+
+function tgGregorianToJalali(gy,gm,gd){
+
+  var g_d_m = [0,31,59,90,120,151,181,212,243,273,304,334];
+
+  var gy2 = gm > 2 ? gy + 1 : gy;
+
+  var days =
+    355666 +
+    (365 * gy) +
+    Math.floor((gy2 + 3) / 4) -
+    Math.floor((gy2 + 99) / 100) +
+    Math.floor((gy2 + 399) / 400) +
+    gd +
+    g_d_m[gm - 1];
+
+  var jy =
+    -1595 +
+    33 * Math.floor(days / 12053);
+
+  days %= 12053;
+
+  jy += 4 * Math.floor(days / 1461);
+
+  days %= 1461;
+
+  if(days > 365){
+
+    jy += Math.floor((days - 1) / 365);
+
+    days = (days - 1) % 365;
+
+  }
+
+  var jm;
+
+  if(days < 186){
+    jm = 1 + Math.floor(days / 31);
+  }else{
+    jm = 7 + Math.floor((days - 186) / 30);
+  }
+
+  var jd;
+
+  if(days < 186){
+    jd = 1 + (days % 31);
+  }else{
+    jd = 1 + ((days - 186) % 30);
+  }
+
+  return {
+    y:jy,
+    m:jm,
+    d:jd
+  };
+}
+
+
+function tgJalaliDate(dateString){
+
+  if(!dateString){
+    return "";
+  }
+
+  var m =
+    String(dateString).match(
+      /^(\d{4})-(\d{1,2})-(\d{1,2})/
+    );
+
+  if(!m){
+    return dateString;
+  }
+
+  var j =
+    tgGregorianToJalali(
+      Number(m[1]),
+      Number(m[2]),
+      Number(m[3])
+    );
+
+  return (
+    j.y +
+    "/" +
+    tgPad(j.m) +
+    "/" +
+    tgPad(j.d)
+  );
+}
+
+
+/* =========================================================
+   اطلاعات تماس
+========================================================= */
+
+function tgGetSettings(){
+
+  var raw =
+    localStorage.getItem("tahmineh_business_settings");
+
+  if(raw){
+
+    try{
+      return JSON.parse(raw);
+    }catch(e){}
+  }
+
+  return {
+    phone:"",
+    address:"",
+    subtitle:"رسولی"
+  };
+}
+
+
+function tgSaveSettings(settings){
+
+  localStorage.setItem(
+    "tahmineh_business_settings",
+    JSON.stringify(settings)
+  );
+
+}
+
+
+/* =========================================================
+   لوگو
+========================================================= */
+
+function tgInstallLogo(){
+
+  var logo =
+    document.querySelector(".logo");
+
+  if(!logo){
+    return;
+  }
+
+  logo.innerHTML =
+    'گز تهمینه';
+
+  var old =
+    document.querySelector(".tg-logo-extra");
+
+  if(old){
+    old.remove();
+  }
+
+  var box =
+    document.createElement("div");
+
+  box.className =
+    "tg-logo-extra";
+
+  box.innerHTML = `
+    <svg class="tg-bridge"
+         viewBox="0 0 100 50"
+         xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 38 Q50 4 92 38"
+            fill="none"
+            stroke="#d4af37"
+            stroke-width="4"/>
+      <path d="M15 39 V45 M85 39 V45"
+            stroke="#d4af37"
+            stroke-width="4"/>
+      <path d="M25 28 V45 M75 28 V45"
+            stroke="#d4af37"
+            stroke-width="3"/>
+    </svg>
+
+    <span style="
+      color:#d4af37;
+      font-size:12px;
+      font-weight:bold;
+    ">
+      TAHMINEH GAZ
+    </span>
+
+    <span style="
+      color:#aaa;
+      font-size:12px;
+    ">
+      رسولی
+    </span>
+  `;
+
+  logo.parentNode.insertBefore(
+    box,
+    logo.nextSibling
+  );
+
+}
+
+
+/* =========================================================
+   تنظیمات تماس
+========================================================= */
+
+function tgInstallBusinessSettings(){
+
+  var target =
+    document.querySelector("#dashboard");
+
+  if(!target){
+    return;
+  }
+
+  if(document.getElementById("tgBusinessSettings")){
+    return;
+  }
+
+  var settings =
+    tgGetSettings();
+
+  var box =
+    document.createElement("div");
+
+  box.id =
+    "tgBusinessSettings";
+
+  box.className =
+    "tg-extra-box";
+
+  box.innerHTML = `
+
+    <div class="tg-extra-title">
+      ⚙️ اطلاعات کسب‌وکار
+    </div>
+
+    <div class="tg-extra-grid">
+
+      <input
+        id="tgPhone"
+        placeholder="شماره تماس"
+        value="${settings.phone || ""}">
+
+      <input
+        id="tgAddress"
+        placeholder="آدرس"
+        value="${settings.address || ""}">
+
+      <input
+        id="tgSubtitle"
+        placeholder="نام خانوادگی"
+        value="${settings.subtitle || "رسولی"}">
+
+    </div>
+
+    <br>
+
+    <button
+      type="button"
+      class="gold-btn"
+      onclick="tgSaveBusinessSettings()">
+      ذخیره اطلاعات
+    </button>
+
+  `;
+
+  target.appendChild(box);
+
+}
+
+
+window.tgSaveBusinessSettings =
+function(){
+
+  var settings = {
+
+    phone:
+      document.getElementById("tgPhone")?.value || "",
+
+    address:
+      document.getElementById("tgAddress")?.value || "",
+
+    subtitle:
+      document.getElementById("tgSubtitle")?.value || "رسولی"
+
+  };
+
+  tgSaveSettings(settings);
+
+  alert("اطلاعات کسب‌وکار ذخیره شد.");
+
+};
+
+
+/* =========================================================
+   نمایش تاریخ شمسی در کل سایت
+========================================================= */
+
+function tgConvertDatesInPage(){
+
+  var root =
+    document.body;
+
+  if(!root){
+    return;
+  }
+
+  var walker =
+    document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT
+    );
+
+  var nodes = [];
+
+  while(walker.nextNode()){
+    nodes.push(walker.currentNode);
+  }
+
+  nodes.forEach(function(node){
+
+    if(
+      node.parentElement &&
+      (
+        node.parentElement.tagName === "SCRIPT" ||
+        node.parentElement.tagName === "STYLE"
+      )
+    ){
+      return;
+    }
+
+    var text =
+      node.nodeValue;
+
+    if(!text){
+      return;
+    }
+
+    text =
+      text.replace(
+        /\b(20\d{2})-(\d{1,2})-(\d{1,2})\b/g,
+        function(all,y,m,d){
+
+          return tgJalaliDate(
+            y+"-"+tgPad(m)+"-"+tgPad(d)
+          );
+
+        }
+      );
+
+    node.nodeValue =
+      text;
+
+  });
+
+}
+
+
+/* =========================================================
+   چاپ فاکتور تکی
+========================================================= */
+
+window.tgPrintInvoice =
+function(id){
+
+  if(!window.data || !Array.isArray(data.sales)){
+    alert("اطلاعات فروش پیدا نشد.");
+    return;
+  }
+
+  var sale =
+    data.sales.find(function(x){
+      return String(x.id) === String(id);
+    });
+
+  if(!sale){
+    alert("فاکتور پیدا نشد.");
+    return;
+  }
+
+  var settings =
+    tgGetSettings();
+
+  var paid = 0;
+
+  if(
+    sale.paidAmount !== undefined &&
+    sale.paidAmount !== null
+  ){
+
+    paid =
+      tgNum(sale.paidAmount);
+
+  }else{
+
+    if(
+      sale.payment === "نقدی" ||
+      sale.payment === "کارت به کارت"
+    ){
+      paid =
+        tgNum(sale.total);
+    }
+
+  }
+
+  var customerBalance =
+    0;
+
+  if(
+    typeof getCustomerAccount === "function"
+  ){
+
+    try{
+
+      var account =
+        getCustomerAccount(
+          sale.customerId
+        );
+
+      if(account){
+        customerBalance =
+          tgNum(account.balance);
+      }
+
+    }catch(e){}
+
+  }
+
+  var rows = "";
+
+  (sale.products || []).forEach(function(p){
+
+    var qty =
+      tgNum(p.qty);
+
+    var price =
+      tgNum(p.price);
+
+    var total =
+      qty * price;
+
+    rows += `
+
+      <tr>
+
+        <td>${escapeHtml(p.name || "")}</td>
+
+        <td>${tgMoney(qty)}</td>
+
+        <td>${tgMoney(price)}</td>
+
+        <td>${tgMoney(total)}</td>
+
+      </tr>
+
+    `;
+
+  });
+
+
+  var invoiceNo =
+    sale.invoiceNumber ||
+    ("TG-" + String(sale.id).slice(-6));
+
+
+  var html = `
+
+  <!DOCTYPE html>
+
+  <html lang="fa" dir="rtl">
+
+  <head>
+
+    <meta charset="UTF-8">
+
+    <title>فاکتور ${invoiceNo}</title>
+
+    <style>
+
+      body{
+        font-family:Tahoma,Arial,sans-serif;
+        padding:35px;
+        color:#111;
+      }
+
+      .head{
+        text-align:center;
+        border-bottom:3px solid #d4af37;
+        padding-bottom:18px;
+        margin-bottom:20px;
+      }
+
+      .brand{
+        font-size:28px;
+        font-weight:bold;
+        color:#b28b00;
+      }
+
+      .en{
+        font-size:13px;
+        letter-spacing:2px;
+      }
+
+      .family{
+        font-size:12px;
+        color:#666;
+        margin-top:5px;
+      }
+
+      .info{
+        display:flex;
+        justify-content:space-between;
+        margin:12px 0;
+        font-size:14px;
+      }
+
+      table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:20px;
+      }
+
+      th,td{
+        border:1px solid #bbb;
+        padding:10px;
+        text-align:center;
+      }
+
+      th{
+        background:#eee;
+      }
+
+      .total{
+        margin-top:20px;
+        font-size:18px;
+        font-weight:bold;
+      }
+
+      .summary{
+        margin-top:20px;
+        border:1px solid #bbb;
+        padding:15px;
+        line-height:2;
+      }
+
+      .footer{
+        margin-top:40px;
+        text-align:center;
+        font-size:12px;
+        color:#666;
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="head">
+
+      <div class="brand">
+        گز تهمینه
+      </div>
+
+      <div class="en">
+        TAHMINEH GAZ
+      </div>
+
+      <div class="family">
+        رسولی
+      </div>
+
+    </div>
+
+    <div class="info">
+
+      <div>
+        <b>شماره فاکتور:</b>
+        ${invoiceNo}
+      </div>
+
+      <div>
+        <b>تاریخ:</b>
+        ${tgJalaliDate(sale.date)}
+      </div>
+
+    </div>
+
+    <div class="info">
+
+      <div>
+        <b>مشتری:</b>
+        ${escapeHtml(sale.customerName || "")}
+      </div>
+
+      <div>
+        <b>نوع پرداخت:</b>
+        ${escapeHtml(sale.payment || "")}
+      </div>
+
+    </div>
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>محصول</th>
+          <th>تعداد / مقدار</th>
+          <th>قیمت واحد</th>
+          <th>مبلغ</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+        ${rows}
+      </tbody>
+
+    </table>
+
+    <div class="total">
+      مبلغ کل:
+      ${tgMoney(sale.total)}
+      تومان
+    </div>
+
+    <div class="summary">
+
+      مبلغ پرداخت شده:
+      <b>${tgMoney(paid)}</b>
+      تومان
+
+      <br>
+
+      مانده این فاکتور:
+      <b>${tgMoney(tgNum(sale.total)-paid)}</b>
+      تومان
+
+      <br>
+
+      مانده حساب مشتری:
+      <b>${tgMoney(customerBalance)}</b>
+      تومان
+
+    </div>
+
+    ${
+      settings.phone
+      ?
+      `<div class="footer">
+        تماس: ${escapeHtml(settings.phone)}
+        ${
+          settings.address
+          ? "<br>"+escapeHtml(settings.address)
+          : ""
+        }
+      </div>`
+      :
+      ""
+    }
+
+    <script>
+      window.onload=function(){
+        window.print();
+      };
+    <\/script>
+
+  </body>
+
+  </html>
+
+  `;
+
+
+  var win =
+    window.open(
+      "",
+      "_blank",
+      "width=900,height=800"
+    );
+
+  if(!win){
+
+    alert(
+      "پنجره چاپ توسط مرورگر مسدود شده. اجازه Pop-up را فعال کن."
+    );
+
+    return;
+  }
+
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+
+};
+
+
+/* =========================================================
+   جلوگیری از مشکل escape
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   اضافه کردن دکمه چاپ به فاکتورها
+========================================================= */
+
+function tgAddInvoiceButtons(){
+
+  var list =
+    document.getElementById("salesList");
+
+  if(!list || !window.data){
+    return;
+  }
+
+  var records =
+    list.querySelectorAll(".record");
+
+  records.forEach(function(record,index){
+
+    if(record.querySelector(".tg-invoice-print")){
+      return;
+    }
+
+    var sale =
+      data.sales[index];
+
+    if(!sale){
+      return;
+    }
+
+    var btn =
+      document.createElement("button");
+
+    btn.type =
+      "button";
+
+    btn.className =
+      "tg-print-btn tg-invoice-print";
+
+    btn.textContent =
+      "🖨 چاپ فاکتور";
+
+    btn.onclick =
+      function(){
+
+        tgPrintInvoice(
+          sale.id
+        );
+
+      };
+
+    record.appendChild(btn);
+
+  });
+
+}
+
+
+/* =========================================================
+   حقوق کارگران
+========================================================= */
+
+function tgInstallWorkerFields(){
+
+  var salary =
+    document.getElementById("workerSalary");
+
+  if(!salary){
+    return;
+  }
+
+  if(document.getElementById("tgWorkerDays")){
+    return;
+  }
+
+  var box =
+    document.createElement("div");
+
+  box.className =
+    "tg-extra-box";
+
+  box.innerHTML = `
+
+    <div class="tg-extra-title">
+      💰 محاسبه حقوق کارگر
+    </div>
+
+    <div class="tg-extra-grid">
+
+      <input
+        id="tgWorkerDays"
+        type="number"
+        min="0"
+        placeholder="تعداد روز کاری">
+
+      <input
+        id="tgWorkerDaily"
+        type="number"
+        min="0"
+        placeholder="دستمزد روزانه">
+
+    </div>
+
+    <div class="small" style="margin-top:8px">
+      حقوق کل = تعداد روز کاری × دستمزد روزانه
+    </div>
+
+  `;
+
+  salary.parentNode.insertBefore(
+    box,
+    salary
+  );
+
+}
+
+
+/* =========================================================
+   ثبت حقوق کارگر
+========================================================= */
+
+function tgPrepareWorkerSalary(){
+
+  var days =
+    tgNum(
+      document.getElementById("tgWorkerDays")?.value
+    );
+
+  var daily =
+    tgNum(
+      document.getElementById("tgWorkerDaily")?.value
+    );
+
+  if(days > 0 && daily > 0){
+
+    var salary =
+      document.getElementById("workerSalary");
+
+    if(salary){
+      salary.value =
+        days * daily;
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   نمایش حقوق + پرداختی + مانده
+========================================================= */
+
+function tgEnhanceWorkersList(){
+
+  if(!window.data || !Array.isArray(data.workers)){
+    return;
+  }
+
+  var list =
+    document.getElementById("workersList");
+
+  if(!list){
+    return;
+  }
+
+  var records =
+    list.querySelectorAll(".record");
+
+  records.forEach(function(record,index){
+
+    var worker =
+      data.workers[index];
+
+    if(!worker){
+      return;
+    }
+
+    if(record.querySelector(".tg-worker-info")){
+      return;
+    }
+
+    var days =
+      tgNum(worker.days);
+
+    var daily =
+      tgNum(worker.dailyWage);
+
+    var total =
+      days * daily;
+
+    if(!total){
+      total =
+        tgNum(worker.salary);
+    }
+
+    var paid = 0;
+
+    (data.payments || []).forEach(function(p){
+
+      if(
+        p.personId &&
+        String(p.personId) === String(worker.personId)
+      ){
+
+        if(
+          p.type === "پرداخت" ||
+          p.type === "پرداختی"
+        ){
+
+          paid +=
+            tgNum(p.amount);
+
+        }
+
+      }
+
+    });
+
+    var remain =
+      total - paid;
+
+    var div =
+      document.createElement("div");
+
+    div.className =
+      "tg-worker-info small";
+
+    div.innerHTML = `
+
+      روز کاری:
+      <b>${tgMoney(days)}</b>
+
+      |
+      دستمزد روزانه:
+      <b>${tgMoney(daily)}</b>
+      تومان
+
+      <br>
+
+      حقوق کل:
+      <b>${tgMoney(total)}</b>
+      تومان
+
+      |
+      پرداخت شده:
+      <b>${tgMoney(paid)}</b>
+      تومان
+
+      <br>
+
+      مانده:
+      <b class="${remain > 0 ? "tg-negative" : "tg-positive"}">
+        ${tgMoney(Math.abs(remain))}
+        تومان
+      </b>
+
+      ${
+        remain < 0
+        ? " (بستانکار)"
+        : ""
+      }
+
+    `;
+
+    record.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================================================
+   چاپ ماهیانه دریافت و پرداخت
+========================================================= */
+
+function tgGetPaymentMonths(){
+
+  var months = {};
+
+  (data.payments || []).forEach(function(p){
+
+    var d =
+      String(p.date || "");
+
+    var m =
+      d.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if(!m){
+      return;
+    }
+
+    var j =
+      tgGregorianToJalali(
+        Number(m[1]),
+        Number(m[2]),
+        Number(m[3])
+      );
+
+    var key =
+      j.y + "-" + tgPad(j.m);
+
+    months[key] = true;
+
+  });
+
+  var now =
+    new Date();
+
+  var current =
+    tgGregorianToJalali(
+      now.getFullYear(),
+      now.getMonth()+1,
+      now.getDate()
+    );
+
+  var currentKey =
+    current.y + "-" + tgPad(current.m);
+
+  months[currentKey] = true;
+
+  return Object.keys(months)
+    .sort()
+    .reverse();
+
+}
+
+
+function tgInstallMonthlyPayments(){
+
+  var list =
+    document.getElementById("paymentsList");
+
+  if(!list){
+    return;
+  }
+
+  var old =
+    document.getElementById("tgMonthlyPayments");
+
+  if(old){
+    old.remove();
+  }
+
+  var box =
+    document.createElement("div");
+
+  box.id =
+    "tgMonthlyPayments";
+
+  box.className =
+    "tg-extra-box";
+
+  var months =
+    tgGetPaymentMonths();
+
+  var options =
+    months.map(function(m){
+
+      return `
+        <option value="${m}">
+          ${m}
+        </option>
+      `;
+
+    }).join("");
+
+  box.innerHTML = `
+
+    <div class="tg-extra-title">
+      🖨 چاپ دریافت و پرداخت ماهیانه
+    </div>
+
+    <div class="tg-extra-grid">
+
+      <select id="tgPaymentMonth">
+        ${options}
+      </select>
+
+    </div>
+
+    <br>
+
+    <button
+      type="button"
+      class="tg-print-btn"
+      onclick="tgPrintMonthlyPayments('all')">
+      🖨 چاپ همه
+    </button>
+
+    <button
+      type="button"
+      class="tg-print-btn"
+      onclick="tgPrintMonthlyPayments('دریافت')">
+      🖨 چاپ دریافت‌ها
+    </button>
+
+    <button
+      type="button"
+      class="tg-print-btn"
+      onclick="tgPrintMonthlyPayments('پرداخت')">
+      🖨 چاپ پرداخت‌ها
+    </button>
+
+    <div
+      id="tgMonthlyTotals"
+      style="margin-top:12px;line-height:2">
+    </div>
+
+  `;
+
+  list.parentNode.insertBefore(
+    box,
+    list
+  );
+
+  tgUpdateMonthlyTotals();
+
+  var select =
+    document.getElementById("tgPaymentMonth");
+
+  if(select){
+
+    select.addEventListener(
+      "change",
+      tgUpdateMonthlyTotals
+    );
+
+  }
+
+}
+
+
+function tgUpdateMonthlyTotals(){
+
+  var select =
+    document.getElementById("tgPaymentMonth");
+
+  var totals =
+    document.getElementById("tgMonthlyTotals");
+
+  if(!select || !totals){
+    return;
+  }
+
+  var month =
+    select.value;
+
+  var receive = 0;
+  var pay = 0;
+
+  (data.payments || []).forEach(function(p){
+
+    var d =
+      String(p.date || "");
+
+    var m =
+      d.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if(!m){
+      return;
+    }
+
+    var j =
+      tgGregorianToJalali(
+        Number(m[1]),
+        Number(m[2]),
+        Number(m[3])
+      );
+
+    var key =
+      j.y + "-" + tgPad(j.m);
+
+    if(key !== month){
+      return;
+    }
+
+    if(
+      p.type === "دریافت" ||
+      p.type === "دریافتنی"
+    ){
+
+      receive +=
+        tgNum(p.amount);
+
+    }else{
+
+      pay +=
+        tgNum(p.amount);
+
+    }
+
+  });
+
+  totals.innerHTML = `
+
+    دریافت:
+    <b>${tgMoney(receive)}</b>
+    تومان
+
+    &nbsp;&nbsp; | &nbsp;&nbsp;
+
+    پرداخت:
+    <b>${tgMoney(pay)}</b>
+    تومان
+
+    &nbsp;&nbsp; | &nbsp;&nbsp;
+
+    خالص:
+    <b>${tgMoney(receive-pay)}</b>
+    تومان
+
+  `;
+
+}
+
+
+window.tgPrintMonthlyPayments =
+function(type){
+
+  var select =
+    document.getElementById("tgPaymentMonth");
+
+  var month =
+    select
+    ? select.value
+    : "";
+
+  if(!month){
+    alert("ماه را انتخاب کن.");
+    return;
+  }
+
+  var rows = [];
+
+  var receive = 0;
+  var pay = 0;
+
+  (data.payments || []).forEach(function(p){
+
+    var d =
+      String(p.date || "");
+
+    var m =
+      d.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if(!m){
+      return;
+    }
+
+    var j =
+      tgGregorianToJalali(
+        Number(m[1]),
+        Number(m[2]),
+        Number(m[3])
+      );
+
+    var key =
+      j.y + "-" + tgPad(j.m);
+
+    if(key !== month){
+      return;
+    }
+
+    var isReceive =
+      p.type === "دریافت" ||
+      p.type === "دریافتنی";
+
+    if(type !== "all"){
+
+      if(type === "دریافت" && !isReceive){
+        return;
+      }
+
+      if(type === "پرداخت" && isReceive){
+        return;
+      }
+
+    }
+
+    var amount =
+      tgNum(p.amount);
+
+    if(isReceive){
+      receive += amount;
+    }else{
+      pay += amount;
+    }
+
+    rows.push(`
+
+      <tr>
+
+        <td>${rows.length + 1}</td>
+
+        <td>${tgJalaliDate(p.date)}</td>
+
+        <td>${escapeHtml(p.type || "")}</td>
+
+        <td>${escapeHtml(p.personName || "بدون نام")}</td>
+
+        <td>${escapeHtml(p.method || "")}</td>
+
+        <td>${escapeHtml(p.title || "")}</td>
+
+        <td>${tgMoney(amount)}</td>
+
+      </tr>
+
+    `);
+
+  });
+
+  var settings =
+    tgGetSettings();
+
+  var html = `
+
+  <!DOCTYPE html>
+
+  <html lang="fa" dir="rtl">
+
+  <head>
+
+    <meta charset="UTF-8">
+
+    <title>گزارش دریافت و پرداخت ${month}</title>
+
+    <style>
+
+      body{
+        font-family:Tahoma,Arial,sans-serif;
+        padding:30px;
+        color:#111;
+      }
+
+      .head{
+        text-align:center;
+        border-bottom:3px solid #d4af37;
+        padding-bottom:15px;
+      }
+
+      .brand{
+        font-size:27px;
+        font-weight:bold;
+      }
+
+      .en{
+        font-size:12px;
+        letter-spacing:2px;
+      }
+
+      table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:25px;
+      }
+
+      th,td{
+        border:1px solid #aaa;
+        padding:8px;
+        text-align:center;
+      }
+
+      th{
+        background:#eee;
+      }
+
+      .totals{
+        margin-top:20px;
+        border:1px solid #aaa;
+        padding:15px;
+        line-height:2;
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="head">
+
+      <div class="brand">
+        گز تهمینه
+      </div>
+
+      <div class="en">
+        TAHMINEH GAZ
+      </div>
+
+      <div>
+        رسولی
+      </div>
+
+    </div>
+
+    <h2 style="text-align:center">
+      گزارش دریافت و پرداخت ماه ${month}
+    </h2>
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>ردیف</th>
+          <th>تاریخ</th>
+          <th>نوع</th>
+          <th>طرف حساب</th>
+          <th>روش</th>
+          <th>شرح</th>
+          <th>مبلغ</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${
+          rows.length
+          ? rows.join("")
+          : `
+            <tr>
+              <td colspan="7">
+                موردی برای این ماه ثبت نشده است.
+              </td>
+            </tr>
+          `
+        }
+
+      </tbody>
+
+    </table>
+
+    <div class="totals">
+
+      مجموع دریافت:
+      <b>${tgMoney(receive)}</b>
+      تومان
+
+      <br>
+
+      مجموع پرداخت:
+      <b>${tgMoney(pay)}</b>
+      تومان
+
+      <br>
+
+      خالص:
+      <b>${tgMoney(receive-pay)}</b>
+      تومان
+
+    </div>
+
+    ${
+      settings.phone
+      ?
+      `<p style="text-align:center;margin-top:35px">
+        تماس: ${escapeHtml(settings.phone)}
+      </p>`
+      :
+      ""
+    }
+
+    <script>
+      window.onload=function(){
+        window.print();
+      };
+    <\/script>
+
+  </body>
+
+  </html>
+
+  `;
+
+  var win =
+    window.open(
+      "",
+      "_blank",
+      "width=1000,height=800"
+    );
+
+  if(!win){
+
+    alert(
+      "پنجره چاپ توسط مرورگر مسدود شده است."
+    );
+
+    return;
+  }
+
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+
+};
+
+
+/* =========================================================
+   اضافه کردن تاریخ شمسی به گزارش چک‌ها
+========================================================= */
+
+function tgEnhanceChecks(){
+
+  var list =
+    document.getElementById("checksList");
+
+  if(!list){
+    return;
+  }
+
+  var textNodes =
+    list.querySelectorAll(
+      ".small"
+    );
+
+  textNodes.forEach(function(el){
+
+    el.innerHTML =
+      el.innerHTML.replace(
+        /\b(20\d{2})-(\d{1,2})-(\d{1,2})\b/g,
+        function(all,y,m,d){
+
+          return tgJalaliDate(
+            y+"-"+tgPad(m)+"-"+tgPad(d)
+          );
+
+        }
+      );
+
+  });
+
+}
+
+
+/* =========================================================
+   ذخیره روز و دستمزد هنگام ثبت کارگر
+========================================================= */
+
+function tgWrapWorkerSave(){
+
+  if(
+    typeof window.saveWorker !== "function" ||
+    window.saveWorker.__tgWrapped
+  ){
+    return;
+  }
+
+  var original =
+    window.saveWorker;
+
+  function wrapped(){
+
+    tgPrepareWorkerSalary();
+
+    var days =
+      tgNum(
+        document.getElementById("tgWorkerDays")?.value
+      );
+
+    var daily =
+      tgNum(
+        document.getElementById("tgWorkerDaily")?.value
+      );
+
+    original();
+
+    if(
+      window.data &&
+      Array.isArray(data.workers) &&
+      data.workers.length
+    ){
+
+      var worker =
+        data.workers[0];
+
+      worker.days =
+        days;
+
+      worker.dailyWage =
+        daily;
+
+      worker.totalSalary =
+        days * daily ||
+        tgNum(worker.salary);
+
+      saveData();
+
+      renderAll();
+
+      tgAfterRender();
+
+    }
+
+  }
+
+  wrapped.__tgWrapped = true;
+
+  window.saveWorker =
+    wrapped;
+
+}
+
+
+/* =========================================================
+   افزودن شماره فاکتور به فاکتورهای جدید
+========================================================= */
+
+function tgWrapSaveSale(){
+
+  if(
+    typeof window.saveSale !== "function" ||
+    window.saveSale.__tgWrapped
+  ){
+    return;
+  }
+
+  var original =
+    window.saveSale;
+
+  function wrapped(){
+
+    var before =
+      data.sales
+      ? data.sales.length
+      : 0;
+
+    original();
+
+    if(
+      data.sales &&
+      data.sales.length > before
+    ){
+
+      var sale =
+        data.sales[0];
+
+      if(!sale.invoiceNumber){
+
+        sale.invoiceNumber =
+          "TG-" +
+          String(sale.id)
+          .slice(-6);
+
+      }
+
+      if(sale.paidAmount === undefined){
+
+        if(
+          sale.payment === "نقدی" ||
+          sale.payment === "کارت به کارت"
+        ){
+
+          sale.paidAmount =
+            tgNum(sale.total);
+
+        }else{
+
+          sale.paidAmount = 0;
+
+        }
+
+      }
+
+      saveData();
+
+      renderAll();
+
+      tgAfterRender();
+
+    }
+
+  }
+
+  wrapped.__tgWrapped = true;
+
+  window.saveSale =
+    wrapped;
+
+}
+
+
+/* =========================================================
+   اجرای افزونه بعد از هر render
+========================================================= */
+
+function tgAfterRender(){
+
+  try{
+    tgInstallLogo();
+  }catch(e){}
+
+  try{
+    tgInstallBusinessSettings();
+  }catch(e){}
+
+  try{
+    tgInstallWorkerFields();
+  }catch(e){}
+
+  try{
+    tgAddInvoiceButtons();
+  }catch(e){}
+
+  try{
+    tgEnhanceWorkersList();
+  }catch(e){}
+
+  try{
+    tgInstallMonthlyPayments();
+  }catch(e){}
+
+  try{
+    tgEnhanceChecks();
+  }catch(e){}
+
+  try{
+    tgConvertDatesInPage();
+  }catch(e){}
+
+}
+
+
+/* =========================================================
+   راه‌اندازی
+========================================================= */
+
+function tgStart(){
+
+  tgWrapWorkerSave();
+
+  tgWrapSaveSale();
+
+  tgAfterRender();
+
+}
+
+
+/* =========================================================
+   اجرای اولیه
+========================================================= */
+
+if(
+  document.readyState === "loading"
+){
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+      setTimeout(
+        tgStart,
+        300
+      );
+
+    }
+  );
+
+}else{
+
+  setTimeout(
+    tgStart,
+    300
+  );
+
+}
+
+})();
+</script>
 </body>
 </html>
